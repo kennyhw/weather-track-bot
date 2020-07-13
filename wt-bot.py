@@ -1,12 +1,13 @@
+import re
+
 from telegram.ext import Updater, CommandHandler
 import requests
-import re
 
 from tk import get_token
 
 def main():
     token = get_token()
-    updater = Update(token)
+    updater = Updater(token)
 
 def command1():
     data = get_data()
@@ -16,4 +17,3 @@ def command1():
 def get_data():
     data = {"text1":"Hello World"}
     return data
-
