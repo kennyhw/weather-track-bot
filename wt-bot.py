@@ -1,4 +1,5 @@
 import re
+import textwrap
 
 from telegram.ext import Updater, CommandHandler
 import requests
@@ -23,11 +24,29 @@ def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot. Beep boop.")
 
 def track(update, context):
-    output = ''
     api_key = get_api_key()
 
-    query = {'q': 'Singapore', 'appid': api_key}
-    data = requests.get('https://api.openweathermap.org/data/2.5/weather', params=query)
+    query = {'q': 'Singapore', 'appid': api_key, 'units':'metric'}
+    response = requests.get('https://api.openweathermap.org/data/2.5/weather', params=query)
+
+    data = response.json()
+    
+    output = f'''\
+                *Weather Status: {data['name']}*
+                ---
+                {data['weather']['main']}
+                {data['weather']['decsription']}
+                {data['weather']['icon']}
+                Current temperature is {data['main']['temp']} \N{DEGREE SIGN}C
+                Feels like {data['main']['feels_like']} \N{DEGREE SIGN}C
+                Pressure: {data['main']['pressure']}
+                Humidity: {data['main']['humidity']}
+             '''
+
+    output = textwrap.dedent(output)
+
+    context.bot.send_message(chat_id=update.effective_chat.id, parse_mode='Markdown', text=output)
+
     
 if __name__ == '__main__':
     main()
