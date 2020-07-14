@@ -32,15 +32,13 @@ def track(update, context):
     data = response.json()
     
     output = f'''\
-                *Weather Status: {data['name']}*
-                ---
-                {data['weather'][0]['main']}
-                {data['weather'][0]['description']}
-                {data['weather'][0]['icon']}
-                Current temperature is {data['main']['temp']} \N{DEGREE SIGN}C
-                Feels like {data['main']['feels_like']} \N{DEGREE SIGN}C
-                Pressure: {data['main']['pressure']}
-                Humidity: {data['main']['humidity']}
+                *{data['name']} Weather Report*
+                --------------------
+                *Weather Condition:* {data['weather'][0]['description'].capitalize()}
+                *Current Temperature:* {data['main']['temp']} \N{DEGREE SIGN}C
+                *Feels like:* {data['main']['feels_like']} \N{DEGREE SIGN}C
+                *Pressure:* {data['main']['pressure']}
+                *Humidity:* {data['main']['humidity']}
              '''
 
     output = textwrap.dedent(output)
