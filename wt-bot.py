@@ -34,9 +34,9 @@ def track(update, context):
     output = f'''\
                 *Weather Status: {data['name']}*
                 ---
-                {data['weather']['main']}
-                {data['weather']['decsription']}
-                {data['weather']['icon']}
+                {data['weather'][0]['main']}
+                {data['weather'][0]['description']}
+                {data['weather'][0]['icon']}
                 Current temperature is {data['main']['temp']} \N{DEGREE SIGN}C
                 Feels like {data['main']['feels_like']} \N{DEGREE SIGN}C
                 Pressure: {data['main']['pressure']}
