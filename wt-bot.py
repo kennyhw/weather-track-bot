@@ -34,11 +34,12 @@ def track(update, context):
     output = f'''\
                 *{data['name']} Weather Report*
                 --------------------
-                *Weather Condition:* {data['weather'][0]['description'].capitalize()}
-                *Current Temperature:* {data['main']['temp']} \N{DEGREE SIGN}C
+                *Weather group:* {data['weather'][0]['main']}
+                *Weather condition:* {data['weather'][0]['description'].capitalize()}
+                *Current temperature:* {data['main']['temp']} \N{DEGREE SIGN}C
                 *Feels like:* {data['main']['feels_like']} \N{DEGREE SIGN}C
-                *Pressure:* {data['main']['pressure']}
-                *Humidity:* {data['main']['humidity']}
+                *Atmospheric pressure:* {data['main']['pressure']} hPa
+                *Humidity:* {data['main']['humidity']}%
              '''
 
     output = textwrap.dedent(output)
