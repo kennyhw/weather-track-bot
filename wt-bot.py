@@ -1,4 +1,4 @@
-import re
+import logging
 import textwrap
 
 from telegram.ext import Updater, CommandHandler
@@ -12,6 +12,9 @@ def main():
     updater = Updater(token=access_token, use_context=True)
     dispatcher = updater.dispatcher
 
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                     level=logging.INFO)
+    
     start_handler = CommandHandler('start', start)
     dispatcher.add_handler(start_handler)
 
