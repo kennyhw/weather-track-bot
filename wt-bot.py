@@ -7,13 +7,15 @@ import requests
 from tk import get_token
 from api_key import get_api_key
 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                     level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+
 def main():
     access_token = get_token()
     updater = Updater(token=access_token, use_context=True)
     dispatcher = updater.dispatcher
-
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                     level=logging.INFO)
     
     start_handler = CommandHandler('start', start)
     dispatcher.add_handler(start_handler)
@@ -24,7 +26,15 @@ def main():
     updater.start_polling()
 
 def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot. Beep boop.")
+    output = '''
+                Hi! I'm WeatherTrack bot!
+                Use /track <city name> to get a weather
+                report of the city.
+             '''
+
+    output = textwrap.dedent(output)
+
+    context.bot.send_message(chat_id=update.effective_chat.id, parse_mode='Markdown', text=output)
 
 def track(update, context):
     api_key = get_api_key()
@@ -35,8 +45,8 @@ def track(update, context):
     data = response.json()
     
     output = f'''\
-                *{data['name']} Weather Report*
-                --------------------
+                *Weather Report of {data['name']}, {data['sys']['country']}*
+                - - - - -
                 *Weather group:* {data['weather'][0]['main']}
                 *Weather condition:* {data['weather'][0]['description'].capitalize()}
                 *Current temperature:* {data['main']['temp']} \N{DEGREE SIGN}C
