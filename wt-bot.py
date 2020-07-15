@@ -29,7 +29,7 @@ def start(update, context):
 def track(update, context):
     api_key = get_api_key()
 
-    query = {'q': 'Singapore', 'appid': api_key, 'units':'metric'}
+    query = {'q': ' '.join(context.args), 'appid': api_key, 'units':'metric'}
     response = requests.get('https://api.openweathermap.org/data/2.5/weather', params=query)
 
     data = response.json()
