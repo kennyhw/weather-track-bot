@@ -2,6 +2,7 @@ import logging
 import textwrap
 
 from telegram.ext import Updater, CommandHandler
+from telegram.error import TelegramError
 import requests
 
 from tk import get_token
@@ -22,6 +23,8 @@ def main():
 
     track_handler = CommandHandler('track', track)
     dispatcher.add_handler(track_handler)
+
+    dispatcher.add_error_handler(error_callback)
 
     updater.start_polling()
 
@@ -62,9 +65,22 @@ def track(update, context):
     else:
         output = '''
                     No data found.
-                    Please ensure that the command is properly formatted:
+                    Please enter the command in the following format:
                     _/track <city name>, <country code (optional)>_
                     *Example:* _/track Paris_ or _/track Paris, FR_
+                 '''
+        
+        output = textwrap.dedent(output)
+
+        context.bot.send_message(chat_id=update.effective_chat.id, parse_mode='Markdown', text=output)
+
+def error_callback(update, context):
+    try:
+        raise context.error
+    except TelegramError as error:
+        output = f'''
+                    Error: {error}.
+                    Please try again.
                  '''
         
         output = textwrap.dedent(output)
