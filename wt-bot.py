@@ -28,8 +28,8 @@ def main():
 def start(update, context):
     output = '''
                 Hi! I'm WeatherTrack bot!
-                Use /track <city name> to get a weather
-                report of the city.
+                Use _/track <city name>, <country code (optional)>_
+                to obtain a city's latest weather report.
              '''
 
     output = textwrap.dedent(output)
@@ -41,24 +41,35 @@ def track(update, context):
 
     query = {'q': ' '.join(context.args), 'appid': api_key, 'units':'metric'}
     response = requests.get('https://api.openweathermap.org/data/2.5/weather', params=query)
-
-    data = response.json()
     
-    output = f'''\
-                *Weather Report of {data['name']}, {data['sys']['country']}*
-                - - - - -
-                *Weather group:* {data['weather'][0]['main']}
-                *Weather condition:* {data['weather'][0]['description'].capitalize()}
-                *Current temperature:* {data['main']['temp']} \N{DEGREE SIGN}C
-                *Feels like:* {data['main']['feels_like']} \N{DEGREE SIGN}C
-                *Atmospheric pressure:* {data['main']['pressure']} hPa
-                *Humidity:* {data['main']['humidity']}%
-             '''
-
-    output = textwrap.dedent(output)
-
-    context.bot.send_message(chat_id=update.effective_chat.id, parse_mode='Markdown', text=output)
-
+    if response.status_code == 200:
+        data = response.json()
     
+        output = f'''
+                    *Weather Report of {data['name']}, {data['sys']['country']}*
+                    - - - - -
+                    *Weather group:* {data['weather'][0]['main']}
+                    *Weather condition:* {data['weather'][0]['description'].capitalize()}
+                    *Current temperature:* {data['main']['temp']} \N{DEGREE SIGN}C
+                    *Feels like:* {data['main']['feels_like']} \N{DEGREE SIGN}C
+                    *Atmospheric pressure:* {data['main']['pressure']} hPa
+                    *Humidity:* {data['main']['humidity']}%
+                 '''
+
+        output = textwrap.dedent(output)
+
+        context.bot.send_message(chat_id=update.effective_chat.id, parse_mode='Markdown', text=output)
+    else:
+        output = '''
+                    No data found.
+                    Please ensure that the command is properly formatted:
+                    _/track <city name>, <country code (optional)>_
+                    *Example:* _/track Paris_ or _/track Paris, FR_
+                 '''
+        
+        output = textwrap.dedent(output)
+
+        context.bot.send_message(chat_id=update.effective_chat.id, parse_mode='Markdown', text=output)
+
 if __name__ == '__main__':
     main()
